@@ -20,6 +20,7 @@
     "noUnusedParameters": false,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
+    "types": ["dom-speech-recognition"], // Explicitly include speech types
 
     "baseUrl": ".",
     "paths": {

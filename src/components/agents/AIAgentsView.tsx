@@ -26,7 +26,8 @@ const AIAgentsView = () => {
   };
 
   return (
-    <div className="space-y-6">
+    // Apply consistent panel styling
+    <div className="bg-white border border-gray-400 rounded-xl shadow-xl p-6 space-y-6"> 
       <header className="space-y-2">
         <motion.h1 
           className="h1"

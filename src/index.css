@@ -13,8 +13,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
 
-    --primary: 210 100% 50%;
-    --primary-foreground: 210 40% 98%;
+    /* Updated primary color to ~#F85C5C */
+    --primary: 0 93% 67%; 
+    /* Updated primary foreground for contrast */
+    --primary-foreground: 224 71% 4%; 
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -22,15 +24,17 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 100% 50%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Updated accent to match new primary */
+    --accent: 0 93% 67%; 
+    --accent-foreground: 224 71% 4%; /* Ensure contrast */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 210 100% 50%;
+    /* Updated ring to match new primary */
+    --ring: 0 93% 67%; 
 
     --radius: 0.5rem;
 
@@ -54,8 +58,10 @@
     --popover: 224 71% 4%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 50%;
-    --primary-foreground: 210 40% 98%;
+    /* Updated primary color to ~#F85C5C */
+    --primary: 0 93% 67%; 
+    /* Updated primary foreground for contrast */
+    --primary-foreground: 224 71% 4%; 
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -63,15 +69,17 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 210 100% 50%;
-    --accent-foreground: 210 40% 98%;
+    /* Updated accent to match new primary */
+    --accent: 0 93% 67%; 
+    --accent-foreground: 224 71% 4%; /* Ensure contrast */
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 210 100% 50%;
+    /* Updated ring to match new primary */
+    --ring: 0 93% 67%; 
   }
 }
 

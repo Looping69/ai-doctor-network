@@ -1,84 +1,84 @@
-import { motion } from "framer-motion";
-import { Search, Clock, Zap, Sparkles } from "lucide-react";
-import SpecialistCard from "@/components/home/SpecialistCard";
+import HealthcareCard from "@/components/home/HealthcareCard"; // Import the new card
 import { agents } from "@/components/agents/data/agentsData";
-const SpecialistsSection = () => {
-  // Map our real agents to the specialists format needed by the SpecialistCard
-  const specialists = agents.slice(0, 6).map((agent, index) => ({
-    id: agent.id,
-    name: agent.name,
-    title: agent.specialty,
-    description: agent.description,
-    isNew: index < 3,
-    // First 3 agents will be marked as new
-    tags: agent.capabilities.slice(0, 2),
-    // Use first 2 capabilities as tags
-    avatar: `/agents/${agent.id}.jpg`,
-    // We'll create these images in public folder
-    delay: 0.1 * (index + 1),
-    isHighlighted: index === 0,
-    // Highlight the first agent
-    timeText: `Saves ${25 + index * 5}+ min per consultation`,
-    icon: agent.icon,
-    color: agent.color
-  }));
-  return <section className="py-14 bg-gradient-to-br from-gray-50 to-blue-50/30">
-      <div className="container mx-auto px-6 my-[20px]">
-        <motion.div className="text-center mb-8" initial={{
-        opacity: 0,
-        y: 20
-      }} whileInView={{
-        opacity: 1,
-        y: 0
-      }} viewport={{
-        once: true
-      }} transition={{
-        duration: 0.5
-      }}>
-          <h2 className="text-2xl font-bold mb-3 flex items-center justify-center gap-2">
-            <Sparkles className="h-6 w-6 text-medical-purple" />
-            <span className="bg-gradient-to-r from-medical-green to-medical-purple bg-clip-text text-transparent">
-              AI Medical Specialists
-            </span>
-          </h2>
-          <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-3">
-            Choose up to 3 specialists for your medical task: 0/3
-          </p>
-          
-          <motion.div className="flex items-center justify-center gap-2 mb-6 max-w-lg mx-auto" initial={{
-          opacity: 0,
-          y: 10
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} viewport={{
-          once: true
-        }} transition={{
-          duration: 0.3,
-          delay: 0.3
-        }}>
-            <div className="flex items-center bg-medical-purple/10 text-medical-purple px-3 py-1.5 rounded-full text-xs font-medium">
-              <Zap className="h-3.5 w-3.5 mr-1" />
-              <span>Time-saving AI assistance</span>
-            </div>
-            <div className="flex items-center bg-medical-green/10 text-medical-green px-3 py-1.5 rounded-full text-xs font-medium">
-              <Clock className="h-3.5 w-3.5 mr-1" />
-              <span>Reduce documentation by 70%</span>
-            </div>
-          </motion.div>
-          
-          <div className="relative max-w-xl mx-auto mt-6">
-            <div className="flex items-center border border-medical-purple/30 rounded-full px-4 py-2 bg-white shadow-sm focus-within:ring-2 focus-within:ring-medical-purple/30 transition-all">
-              <Search className="h-4 w-4 text-medical-purple mr-2" />
-              <input type="text" placeholder="Search specialists or tasks..." className="w-full bg-transparent border-none focus:outline-none text-sm" />
-            </div>
-          </div>
-        </motion.div>
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"; // Import Carousel components
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {specialists.map((specialist, index) => <SpecialistCard key={specialist.id} id={specialist.id} name={specialist.name} title={specialist.title} description={specialist.description} isNew={specialist.isNew} tags={specialist.tags} avatar={specialist.avatar} delay={specialist.delay} isHighlighted={specialist.isHighlighted} timeText={specialist.timeText} icon={specialist.icon} color={specialist.color} />)}
-        </div>
-      </div>
-    </section>;
+// Define interface for the mapped specialist object to match HealthcareCard props
+interface MappedSpecialistForHC {
+  id: string;
+  logoText: string;
+  location: string; // Changed from specialty
+  description: string;
+  services: string[];
+  imageUrl: string; 
+  delay: number;
+  isNew: boolean;
+  logoIconText: string;
+  // logoColor is not directly used by HealthcareCard
+  rating: number | 'New';
+  reviewCount?: number;
+  availability: string;
+  price: string;
+  pricePeriod: string;
+}
+
+const SpecialistsSection = () => {
+  // Map agents data to the HealthcareCard props
+  const specialists: MappedSpecialistForHC[] = agents.map((agent, index) => {
+    const isNewAgent = index < 3; // Example logic for 'New' rating
+    return {
+      id: agent.id,
+      logoText: agent.name,
+      location: agent.specialty, // Map specialty to location
+      description: agent.description,
+      services: agent.capabilities.slice(0, 2), // Show first 2 capabilities as services
+      imageUrl: `/agents/${agent.id}.jpg`, // Assuming image path convention
+      logoIconText: agent.name.substring(0, 2).toUpperCase(),
+      rating: isNewAgent ? 'New' : parseFloat((4.7 + Math.random() * 0.3).toFixed(1)),
+      reviewCount: isNewAgent ? undefined : Math.floor(500 + Math.random() * 1500),
+      availability: index % 2 === 0 ? "Available Mon-Fri" : "Available 24/7",
+      price: isNewAgent ? "$0" : `$${10 + index * 5}`,
+      pricePeriod: isNewAgent ? "for first consultation" : "per consultation",
+      // Add missing properties required by the interface
+      delay: 0, // Delay is not used in HealthcareCard, set to 0
+      isNew: isNewAgent, // Keep the isNew logic if needed elsewhere, though not used by card
+    };
+  });
+  
+  // Return Carousel instead of grid
+  return (
+    <Carousel 
+      opts={{
+        align: "start",
+        loop: true, // Loop the carousel
+      }}
+      className="w-full relative" // Added relative positioning for nav buttons
+    >
+      <CarouselContent className="-ml-4"> {/* Negative margin for item spacing */}
+        {specialists.map((specialist, index) => (
+          <CarouselItem key={specialist.id || index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+            <div className="p-1 h-full">
+              {/* Render the new HealthcareCard */}
+              <HealthcareCard
+                // Spread the mapped props
+                {...specialist}
+                // Add optional favorite handling if needed later
+                // isFavorite={false}
+                // onFavoriteToggle={() => console.log('Toggle favorite for', specialist.id)}
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      {/* Position nav buttons inside the container, slightly offset */}
+      <CarouselPrevious className="absolute left-[-20px] top-1/2 -translate-y-1/2 hidden sm:flex z-10" /> 
+      <CarouselNext className="absolute right-[-20px] top-1/2 -translate-y-1/2 hidden sm:flex z-10" />
+    </Carousel>
+  );
 };
 export default SpecialistsSection;

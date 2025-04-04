@@ -11,6 +11,7 @@ import {
   Phone,
   Monitor,
   Bell,
+  ClipboardList, // Added icon for Tumor Board
 } from "lucide-react";
 
 type NavItemsProps = {
@@ -32,12 +33,7 @@ const NavItems = ({ collapsed }: NavItemsProps) => {
         label="AI Agents"
         collapsed={collapsed}
       />
-      <NavItem
-        to="/settings/ai-experts"
-        icon={Microscope}
-        label="AI Experts"
-        collapsed={collapsed}
-      />
+      {/* Removed AI Experts NavItem */}
       <NavItem
         to="/patients"
         icon={FileText}
@@ -50,16 +46,17 @@ const NavItems = ({ collapsed }: NavItemsProps) => {
         label="Follow-up Calls"
         collapsed={collapsed}
       />
-      <NavItem
-        to="/followup-monitoring"
-        icon={Monitor}
-        label="Call Monitoring"
-        collapsed={collapsed}
-      />
+      {/* Removed Call Monitoring NavItem */}
       <NavItem
         to="/collaboration"
         icon={Users}
         label="Collaboration"
+        collapsed={collapsed}
+      />
+      <NavItem
+        to="/tumor-board" // Added route for Tumor Board
+        icon={ClipboardList} // Added icon
+        label="Tumor Board" // Added label
         collapsed={collapsed}
       />
       <NavItem

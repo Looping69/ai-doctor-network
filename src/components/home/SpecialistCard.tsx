@@ -1,150 +1,177 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Star, Clock, Sparkles } from "lucide-react";
-import PreviewChatModal from "./PreviewChatModal";
+import { Star, Heart } from "lucide-react";
 
+// Updated Props for LENY-AI style card
 interface SpecialistCardProps {
   id: string;
-  name: string;
-  title: string;
+  logoText: string; // Specialist Name (e.g., CardioAssist)
+  specialty: string; // e.g., Cardiology
   description: string;
-  isNew: boolean;
-  tags: string[];
-  avatar: string;
+  services: string[]; // Service tags
+  imageUrl: string; 
   delay: number;
-  isHighlighted?: boolean;
-  timeText?: string;
-  icon?: React.FC<{ className?: string }>;
-  color?: string;
+  logoIconText?: string; // Text for the square logo (e.g., "Ca")
+  logoColor?: string; // Background color for the square logo (Tailwind class, e.g., "bg-red-500")
+  rating?: number | 'New'; // Rating number or the string "New"
+  reviewCount?: number; // e.g., 1284 (only shown if rating is a number)
+  availability?: string; // e.g., "Available 24/7"
+  price?: string; // e.g., "$0"
+  pricePeriod?: string; // e.g., "for first consultation"
+  isNew?: boolean; // To show the "New" badge on the image
 }
 
-const SpecialistCard = ({ 
+// Heart Icon for Favorite Button
+const FavoriteIcon = ({ filled }: { filled: boolean }) => (
+  <Heart 
+    className={cn(
+      "h-4 w-4 transition-colors duration-200 stroke-black", // Stroke is always black now
+      filled ? "fill-red-500" : "fill-none" // Only fill changes
+    )} 
+    strokeWidth={2}
+  />
+);
+
+// Star Icon for Rating (used in badge and rating display)
+const StarIcon = ({ className = "h-3.5 w-3.5", filled = true }: { className?: string, filled?: boolean }) => (
+  <Star className={cn(className, filled ? "fill-primary text-primary" : "fill-gray-300 text-gray-300")} />
+);
+
+const SpecialistCard = ({
   id,
-  name, 
-  title, 
-  description, 
-  isNew, 
-  tags, 
-  avatar,
+  logoText,
+  specialty,
+  description,
+  services = [],
+  imageUrl,
   delay,
-  isHighlighted = false,
-  timeText,
-  icon: Icon,
-  color
+  logoIconText = logoText.substring(0, 2),
+  logoColor = "bg-primary", // Default to primary color
+  rating = 4.9, // Default rating
+  reviewCount = 1284, // Default review count
+  availability = "Available 24/7",
+  price = "$0",
+  pricePeriod = "for first consultation",
+  isNew = false, // Default to not new
 }: SpecialistCardProps) => {
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFavorite(!isFavorite);
+  };
+
+  const displayRating = typeof rating === 'number' ? rating.toFixed(1) : rating;
+  const showReviewCount = typeof rating === 'number' && reviewCount;
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, delay }}
-      >
-        <Card className={cn(
-          "h-full hover:shadow-md transition-all duration-200 overflow-hidden group",
-          isHighlighted && "border-medical-teal border-2 shadow-md"
-        )}>
-          <CardContent className="p-5">
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex items-center">
-                <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-medical-teal/20">
-                  <AvatarImage src={avatar} alt={name} />
-                  <AvatarFallback className={cn(
-                    "bg-gradient-to-br text-white",
-                    color ? `from-${color} to-medical-blue` : "from-medical-teal to-medical-blue"
-                  )}>
-                    {name.substring(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                
-                {Icon && (
-                  <div className={cn(
-                    "w-7 h-7 rounded-full flex items-center justify-center -ml-3 mt-6 shadow-md",
-                    `bg-gradient-to-r from-${color} to-medical-blue text-white`
-                  )}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex items-center">
-                {isNew && (
-                  <Badge variant="outline" className="bg-medical-teal/10 text-medical-teal border-medical-teal/30 mr-2">
-                    <Sparkles className="h-3 w-3 mr-1" /> New
-                  </Badge>
-                )}
-                {isHighlighted && (
-                  <Badge variant="outline" className="bg-medical-green/10 text-medical-green border-medical-green/30">
-                    Recommended
-                  </Badge>
-                )}
-              </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay }}
+      className="w-full"
+    >
+      {/* Use anchor tag if you want the whole card to be clickable */}
+      {/* <a href={`/specialist/${id}`} className="block h-full"> */}
+      {/* Added flex flex-col h-full to ensure cards take full height of grid cell */}
+      <Card className="w-full rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white border border-gray-100 flex flex-col h-full">
+        {/* Image Container */}
+        <div className="relative w-full aspect-[3/2] bg-gray-100 flex-shrink-0"> {/* Added flex-shrink-0 */}
+          <img 
+            src={imageUrl || '/placeholder.svg'}
+            alt={specialty} 
+            className="absolute inset-0 w-full h-full object-cover" 
+            onError={(e) => (e.currentTarget.src = '/placeholder.svg')}
+          />
+          {/* Favorite Button */}
+          <button
+            onClick={toggleFavorite}
+            className="absolute top-4 right-4 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200 z-10 shadow-sm"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            <FavoriteIcon filled={isFavorite} />
+          </button>
+          {/* New Badge */}
+          {isNew && (
+            <div className="absolute top-4 left-4 bg-white text-gray-900 px-3 py-1.5 rounded-full text-xs font-semibold z-10 flex items-center gap-1 shadow-sm">
+              <StarIcon className="h-3 w-3" filled={true} />
+              New
             </div>
-            
-            <h3 className="font-medium text-lg mb-1">{name}</h3>
-            <p className="text-muted-foreground text-sm mb-1">{title}</p>
-            
-            {isHighlighted && (
-              <div className="flex items-center mb-2 text-sm text-amber-500">
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current mr-1" />
-                <Star className="h-4 w-4 fill-current" />
-                <span className="ml-2 text-muted-foreground">4.9 (1,284)</span>
+          )}
+        </div>
+
+        {/* Content - Added flex-grow to allow content to expand */}
+        <CardContent className="p-5 flex flex-col flex-grow"> 
+          {/* Logo Row */}
+          <div className="flex items-center gap-2 mb-3 flex-shrink-0"> {/* Added flex-shrink-0 */}
+            {logoIconText && (
+              <div className={cn(
+                "w-7 h-7 rounded-md flex items-center justify-center font-bold text-xs text-white flex-shrink-0",
+                logoColor // Apply dynamic background color
+              )}>
+                {logoIconText}
               </div>
             )}
-            
-            <p className="text-sm mb-4">{description}</p>
-            
-            <div className="flex flex-wrap gap-2 mb-4">
-              {tags.map((tag, i) => (
-                <Badge key={i} variant="secondary" className="font-normal text-xs">
-                  {tag}
+            <div className="font-semibold text-base truncate">{logoText}</div>
+          </div>
+
+          {/* Info Row */}
+          <div className="flex justify-between items-center mb-2 gap-2">
+            <div className="text-base font-bold truncate flex-shrink-0">{specialty}</div>
+            <div className="flex items-center gap-1 text-sm font-medium whitespace-nowrap flex-shrink-0">
+              {rating === 'New' ? (
+                <>
+                  <StarIcon className="h-3.5 w-3.5" filled={false} />
+                  <span className="text-gray-700">New</span>
+                </>
+              ) : (
+                <>
+                  <StarIcon className="h-3.5 w-3.5" filled={true} />
+                  <span>{displayRating}</span>
+                  {showReviewCount && (
+                    <span className="text-gray-500">({reviewCount.toLocaleString()})</span>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{description}</p> {/* Limit lines */}
+
+          {/* Availability */}
+          {availability && (
+            <p className="text-sm text-gray-600 mb-3">{availability}</p>
+          )}
+
+          {/* Price */}
+          {price && (
+            <div className="text-base font-semibold mb-3">
+              {price}
+              {pricePeriod && (
+                <span className="text-sm font-normal text-gray-600 ml-1">{pricePeriod}</span>
+              )}
+            </div>
+          )}
+
+          {/* Services/Tags - Added mt-auto to push tags to the bottom */}
+          {services.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-auto pt-3"> {/* Added mt-auto and pt-3 */}
+              {services.map((service, i) => (
+                <Badge key={i} variant="secondary" className="text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1">
+                  {service}
                 </Badge>
               ))}
             </div>
-            
-            {timeText && (
-              <div className="flex items-center text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full mb-4 self-start">
-                <Clock className="h-3 w-3 mr-1" />
-                {timeText}
-              </div>
-            )}
-            
-            <Button 
-              className="w-full bg-gradient-to-r from-medical-teal to-medical-blue hover:opacity-90 group-hover:shadow-md transition-all" 
-              size="sm"
-              onClick={() => setIsChatModalOpen(true)}
-            >
-              <MessageSquare className="mr-2 h-4 w-4" /> Chat with {name.split(' ')[0]}
-            </Button>
-            
-            {isHighlighted && (
-              <p className="text-xs text-center mt-3 text-muted-foreground">
-                Free for 2 messages • No credit card required
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      <PreviewChatModal
-        isOpen={isChatModalOpen}
-        onClose={() => setIsChatModalOpen(false)}
-        agentName={name}
-        agentSpecialty={title}
-        agentId={id}
-      />
-    </>
+          )}
+        </CardContent>
+      </Card>
+      {/* </a> */}
+    </motion.div>
   );
 };
 

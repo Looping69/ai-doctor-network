@@ -78,10 +78,12 @@ const PatientRecordsView = () => {
   };
   
   return (
-    <div className="space-y-6">
-      <header className="space-y-2 bg-white p-6 rounded-lg shadow-sm border border-blue-50">
+    // Apply consistent panel styling to the main container
+    <div className="bg-white border border-gray-400 rounded-xl shadow-xl p-6 space-y-6"> 
+      {/* Remove panel styling from inner header */}
+      <header className="space-y-2"> 
         <motion.h1 
-          className="text-3xl font-bold text-blue-900"
+          className="text-3xl font-bold text-gray-900" // Adjusted color for consistency
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -98,8 +100,9 @@ const PatientRecordsView = () => {
         </motion.p>
       </header>
 
+      {/* Remove panel styling from search/action section */}
       <motion.div
-        className="flex items-center justify-between space-y-0 bg-white p-6 rounded-lg shadow-sm border border-blue-50"
+        className="flex items-center justify-between space-y-0" 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
@@ -139,30 +142,30 @@ const PatientRecordsView = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
-          className="bg-white p-6 rounded-lg shadow-sm border border-blue-50"
+          // Removed panel styling from TabsList container
         >
-          <TabsList className="grid grid-cols-4 md:w-[600px] bg-blue-50">
+          <TabsList className="grid grid-cols-4 md:w-[600px]"> {/* Removed bg-blue-50 */}
             <TabsTrigger 
               value="all" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" // Use primary theme colors
             >
               All Patients
             </TabsTrigger>
             <TabsTrigger 
               value="critical"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" // Use primary theme colors
             >
               Critical
             </TabsTrigger>
             <TabsTrigger 
               value="stable"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" // Use primary theme colors
             >
               Stable
             </TabsTrigger>
             <TabsTrigger 
               value="recent"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" // Use primary theme colors
             >
               Recent Visits
             </TabsTrigger>
